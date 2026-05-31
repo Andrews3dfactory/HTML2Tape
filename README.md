@@ -1,6 +1,6 @@
 # HTML2Tape 🚀  
 A fast, WebSerial‑powered label input tool for the CrunchLabs Hack Pack Label Maker.  
-Designed by Jacob Ehli • Forge Street Creations
+Designed by Andrew Ehli • Forge Street Creations
 
 HTML2Tape replaces the slow joystick input on the Hack Pack Label Maker with a clean, poppy, space‑themed UI that lets you type labels directly from your keyboard and send them instantly to the Arduino.
 

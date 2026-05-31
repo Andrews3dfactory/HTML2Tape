@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: 'Segoe UI', sans-serif;
+        color: white;
+        text-align: center;
+    }
+
+    /* STARFIELD BACKGROUND */
+    #stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        border-radius: 50%;
+        animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+        0% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.6); }
+        100% { opacity: 0.2; transform: scale(1); }
+    }
+
+    h1 {
+        margin-top: 40px;
+        font-size: 48px;
+        font-weight: 900;
+        color: #E8602B;
+        text-shadow: 0 0 20px rgba(232,96,43,0.9);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .panel {
+        margin: 40px auto;
+        width: 480px;
+        padding: 30px;
+        background: rgba(255,255,255,0.08);
+        border: 3px solid #E8602B;
+        border-radius: 15px;
+        box-shadow: 0 0 25px rgba(232,96,43,0.5);
+        backdrop-filter: blur(4px);
+        animation: popIn 0.4s ease-out;
+    }
+
+    @keyframes popIn {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    button {
+        background: #E8602B;
+        border: 3px solid #ff9a6a;
+        padding: 15px 25px;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 10px;
+        cursor: pointer;
+        margin: 10px;
+        transition: 0.15s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 0 12px rgba(232,96,43,0.6);
+    }
+
+    button:hover {
+        background: #ff7a42;
+        transform: scale(1.05);
+        box-shadow: 0 0 18px rgba(255,122,66,0.9);
+    }
+
+    #textInput {
+        width: calc(100% - 20px);
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border: 3px solid #ff9a6a;
+        background: rgba(255,255,255,0.15);
+        color: white;
+        font-size: 20px;
+        text-align: center;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    #textInput::placeholder {
+        color: #ffd2b8;
+    }
+
+    .divider {
+        width: 100%;
+        height: 3px;
+        background: #E8602B;
+        margin: 25px 0;
+        box-shadow: 0 0 10px rgba(232,96,43,0.7);
+    }
+</style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+
+<h1>HTML2Tape</h1>
+
+<div class="panel">
+    <button id="connectBtn">Connect</button>
+
+    <div class="divider"></div>
+
+    <input id="textInput" placeholder="Enter label text">
+
+    <button id="sendBtn">Print</button>
+</div>
+
+<script>
+/* STAR GENERATOR */
+const starContainer = document.getElementById("stars");
+for (let i = 0; i < 200; i++) {
+    const star = document.createElement("div");
+    star.classList.add("star");
+    star.style.top = Math.random() * 100 + "vh";
+    star.style.left = Math.random() * 100 + "vw";
+    star.style.animationDelay = Math.random() * 2 + "s";
+    starContainer.appendChild(star);
+}
+
+/* ORIGINAL FUNCTIONALITY (unchanged) */
+let port;
+let writer;
+
+document.getElementById("connectBtn").onclick = async () => {
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 9600 });
+
+    writer = port.writable.getWriter();
+
+    await writer.write(new TextEncoder().encode("CONNECTED\n"));
+};
+
+document.getElementById("sendBtn").onclick = async () => {
+    const text = document.getElementById("textInput").value;
+    await writer.write(new TextEncoder().encode("PRINT:" + text + "\n"));
+};
+</script>
+
+</body>
+</html>
